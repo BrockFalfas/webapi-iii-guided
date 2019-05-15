@@ -118,4 +118,20 @@ router.post('/:id/messages', async (req, res) => {
   }
 });
 
+function validateId(req, res, next) {
+  const { id } = req.params;
+  Hubs.findById(id)
+  .then (hub => {
+    if(hub) {
+      req.hub = hub;
+      next();
+    } else {
+      res.status(404).json({message: "Invalid id, hub not found."})
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: "You broke the internet."})
+  })
+}
 module.exports = router;
